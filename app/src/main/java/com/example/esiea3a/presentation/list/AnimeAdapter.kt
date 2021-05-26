@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.esiea3a.R
 
-class AnimeAdapter(private var dataSet: List<Anime>) : RecyclerView.Adapter<AnimeAdapter.ViewHolder>() {
-    private var listener:((Anime)-> Unit)? =null
+class AnimeAdapter(private var dataSet: List<Anime>,private var listener:((Anime)-> Unit)? =null) : RecyclerView.Adapter<AnimeAdapter.ViewHolder>() {
+
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
