@@ -8,6 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.esiea3a.R
+import com.example.esiea3a.presentation.api.AnimeApi
+import com.example.esiea3a.presentation.api.AnimeResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 /**
@@ -36,15 +43,40 @@ class AnimeListFragment : Fragment() {
             layoutManager = this@AnimeListFragment.layoutManager
             adapter=this@AnimeListFragment.adapter
         }
-        val animeList : ArrayList<Anime> = arrayListOf<Anime>().apply {
-            add(Anime("Yugioh"))
-            add(Anime("Pokemon"))
-            add(Anime("SAO"))
-            add(Anime("SNK"))
-            add(Anime("NGNL"))
-            add(Anime("DBZ"))
+
+        val retrofit : Retrofit = Retrofit.Builder()
+            .baseUrl("https://api.jikan.moe/v3/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val animeApi: AnimeApi = retrofit.create(AnimeApi::class.java)
+
+        animeApi.getAnimeList().enqueue(object: Callback<AnimeResponse> {
+            override fun onFailure(call: Call<AnimeResponse>, t: Throwable) {
+                //TODO("Not yet implemented")
+            }
+
+            override fun onResponse(call: Call<AnimeResponse>, response: Response<AnimeResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val animeResponse : AnimeResponse = response.body()!!
+                    adapter.updateList(animeResponse.results)
+                }
+            }
+        })
+
+
+
+        /*val animeList : ArrayList<Anime> = arrayListOf<Anime>().apply {
+            add(Anime("Yugioh","Yugioh"))
+            add(Anime("Pokemon","Pokemon"))
+            add(Anime("SAO","SAO"))
+            add(Anime("SNK","SNK"))
+            add(Anime("NGNL","NGNL"))
+            add(Anime("DBZ","DBZ"))
         }
-        adapter.updateList(animeList)
+        adapter.updateList(animeList)*/
     }
 
 }
+
+

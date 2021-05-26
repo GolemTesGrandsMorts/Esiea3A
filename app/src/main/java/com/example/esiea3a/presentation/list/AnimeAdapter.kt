@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.esiea3a.R
 
 class AnimeAdapter(private var dataSet: List<Anime>) : RecyclerView.Adapter<AnimeAdapter.ViewHolder>() {
-
+    private var listener:((Anime)-> Unit)? =null
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
@@ -19,6 +19,7 @@ class AnimeAdapter(private var dataSet: List<Anime>) : RecyclerView.Adapter<Anim
         init {
             // Define click listener for the ViewHolder's View.
             textView = view.findViewById(R.id.anime_name)
+
         }
     }
     fun updateList(List: List<Anime>){
@@ -39,7 +40,10 @@ class AnimeAdapter(private var dataSet: List<Anime>) : RecyclerView.Adapter<Anim
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         val anime:Anime =dataSet[position]
-        viewHolder.textView.text = anime.name
+        viewHolder.textView.text = anime.title
+        viewHolder.itemView.setOnClickListener {
+            listener?.invoke(anime)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
