@@ -22,7 +22,8 @@
         tools:layout="@layout/fragment_anime_detail">
         <argument
             android:name="animeId"
-            android:defaultValue="ERR"
+            app:argType="integer"
+            android:defaultValue="-1"
             />
 
         <action

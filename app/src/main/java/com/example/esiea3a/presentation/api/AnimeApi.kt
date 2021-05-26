@@ -14,7 +14,7 @@ interface AnimeApi {
     @GET ("search/anime?q=high")
     fun getAnimeList(): Call<AnimeResponse>
 
-    @GET("anime/{{id}}")
+    @GET("anime/{id}")
     fun getAnimeDetail(@Path("id") id: Int): Call<AnimeDetailResponse>
 }
 

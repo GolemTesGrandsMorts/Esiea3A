@@ -29,8 +29,6 @@ class AnimeDetailFragment : Fragment() {
 
     }
 
-    val animeId: Int? = arguments?.getInt("animeId")
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,18 +38,16 @@ class AnimeDetailFragment : Fragment() {
 
 
     private fun callApi(){
-        if (animeId != null) {
-            Singletons.animeApi.getAnimeDetail(animeId).enqueue(object : Callback<AnimeDetailResponse> {
+        val id = arguments?.getInt("animeId") ?:-1
+        Singletons.animeApi.getAnimeDetail(id).enqueue(object : Callback<AnimeDetailResponse> {
             override fun onFailure(call: Call<AnimeDetailResponse>, t: Throwable) {
 
-            }
-
-                override fun onResponse(call: Call<AnimeDetailResponse>, response: Response<AnimeDetailResponse>) {
-                    if (response.isSuccessful && response.body() != null) {
-                        textViewName.text = response.body()!!.synopsis
-                    }
-                }
-            })
         }
+            override fun onResponse(call: Call<AnimeDetailResponse>, response: Response<AnimeDetailResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    textViewName.text = response.body()!!.synopsis
+                }
+            }
+        })
     }
 }
