@@ -4,18 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.esiea3a.R
-import com.example.esiea3a.presentation.api.AnimeApi
+import com.example.esiea3a.presentation.Singletons
 import com.example.esiea3a.presentation.api.AnimeResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 
 
 /**
@@ -24,10 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class AnimeListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-
-    private val adapter = AnimeAdapter(listOf(), ::onClikedAnime)
-
-    private  val layoutManager = LinearLayoutManager(context)
+    private val adapter = AnimeAdapter(listOf(), ::onClickedAnime)
+   // private  val layoutManager = LinearLayoutManager(context)
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +33,6 @@ class AnimeListFragment : Fragment() {
     ): View? {
 
         return inflater.inflate(R.layout.fragment_anime_list, container,false )
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,21 +40,12 @@ class AnimeListFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.anime_recyclerview)
 
-
-
         recyclerView.apply {
-            layoutManager = this@AnimeListFragment.layoutManager
+            layoutManager = LinearLayoutManager(context)
             adapter=this@AnimeListFragment.adapter
         }
 
-        val retrofit : Retrofit = Retrofit.Builder()
-            .baseUrl("https://api.jikan.moe/v3/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val animeApi: AnimeApi = retrofit.create(AnimeApi::class.java)
-
-        animeApi.getAnimeList().enqueue(object: Callback<AnimeResponse> {
+        Singletons.animeApi.getAnimeList().enqueue(object: Callback<AnimeResponse> {
             override fun onFailure(call: Call<AnimeResponse>, t: Throwable) {
                 //TODO("Not yet implemented")
             }
@@ -69,19 +57,12 @@ class AnimeListFragment : Fragment() {
                 }
             }
         })
-
-        /*val animeList : ArrayList<Anime> = arrayListOf<Anime>().apply {
-            add(Anime("Yugioh","Yugioh"))
-            add(Anime("Pokemon","Pokemon"))
-            add(Anime("SAO","SAO"))
-            add(Anime("SNK","SNK"))
-            add(Anime("NGNL","NGNL"))
-            add(Anime("DBZ","DBZ"))
-        }
-        adapter.updateList(animeList)*/
     }
-    private fun onClikedAnime(anime: Anime) {
-        findNavController().navigate(R.id.navigateToAnimeDetailFragment)
+    private fun onClickedAnime(anime: Anime) {
+        findNavController().navigate(R.id.navigateToAnimeDetailFragment, bundleOf(
+            "animeId" to anime.mal_id
+        ))
+
     }
 }
 
